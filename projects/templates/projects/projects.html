@@ -1,0 +1,16 @@
+{% extends 'main.html' %} {% block content %}
+
+<h1>Projects</h1>
+<p>Aqui se listaran todos los proyects, clicables.</p>
+
+<ul>
+  {% for item in projects %}
+  <li>
+    <a href="{% url 'project' item.id %}">{{ item }}</a> -
+    <a href="{% url 'update-project' item.id %}">Edit project</a> -
+    <a href="{% url 'delete-project' item.id %}">Delete project</a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
