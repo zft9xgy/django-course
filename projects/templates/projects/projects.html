@@ -42,7 +42,9 @@
               <div class="card__body">
                 <h3 class="project__title">{{ item.title}}</h3>
                 <p>
-                  <a class="project__author" href="">By Dennis Ivanov</a>
+                  <a class="project__author" href=""
+                    >By {{ item.owner.name }}</a
+                  >
                 </p>
                 <p class="project--rating">
                   <span style="font-weight: bold">{{item.vote_ratio}}%</span>
