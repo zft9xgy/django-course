@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Profile
+from .models import Profile, Skill
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserCustomRegisterForm, ProfileForm
+from .forms import UserCustomRegisterForm, ProfileForm, SkillForm
 
 # Create your views here.
 
@@ -123,10 +123,54 @@ def updateProfile(request):
         }
     return render(request, 'users/edit-profile.html',context)
 
-#ok update profile 
-#ok crear views.py y funcion
-#ok añadir a url.py
-# crear form.py
-# añadir a la plantilla
-# crear signals para que cuando se modifique el profile se modifique user
-# en username, first_name y email profile - User
+
+
+# skill CRUD 
+
+@login_required(login_url='login')
+def createSkill(request):
+    profile = request.user.profile
+    form = SkillForm()
+
+    if request.method == "POST":
+        form = SkillForm(request.POST)
+        if form.is_valid():
+            skill = form.save(commit=False)
+            skill.owner = profile
+            skill.save()
+            return redirect('account')
+
+
+    context = {
+        'form': form,
+    }
+    return render(request,'users/skill-form.html',context)
+
+
+@login_required(login_url='login')
+def updateSkill(request,pk):
+    skill = Skill.objects.get(id=pk)
+    form = SkillForm(instance=skill)
+
+    if request.method == 'POST':
+        form = SkillForm(request.POST,instance=skill)
+        if form.is_valid():
+            form.save()
+            return redirect('account')
+
+    context = {
+        'form':form,
+    }
+    return render(request,'users/skill-form.html',context)
+
+@login_required(login_url='login')
+def deleteSkill(request,pk):
+    skillObj = Skill.objects.get(id=pk)
+    if request.method == 'POST':
+        skillObj.delete()
+        return redirect('account')
+        
+    context = {
+        'object': skillObj
+    }
+    return render(request,'delete-object.html',context)
