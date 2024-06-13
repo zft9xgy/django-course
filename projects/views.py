@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .models import Project
 from .forms import ProjectForm
+from users.models import Profile
 
 # Create your views here.
 # Aqui controlamos toda la lógica del programa. 
@@ -33,7 +34,10 @@ def createProject(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST,request.FILES)
         if form.is_valid():
-            form.save()
+            project = form.save(commit=False)
+            profile = Profile.objects.get(user=request.user)
+            project.owner = profile
+            project.save()
             return redirect('projects')
 
 

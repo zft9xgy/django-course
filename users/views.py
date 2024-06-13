@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from .models import Profile
 from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .forms import UserCustomRegisterForm
 
 # Create your views here.
@@ -72,7 +73,7 @@ def registerUser(request):
             messages.success(request,'Registration was success!')
             
             login(request, user)
-            return redirect('/')
+            return redirect('account')
         else:
             messages.error(request,'A problem as occurred un registration')
     else:
@@ -86,3 +87,18 @@ def registerUser(request):
     }
         
     return render(request,'users/login-register.html',context)
+
+
+
+@login_required(login_url='login')
+def userAccount(request):
+    profile = Profile.objects.get(user=request.user)
+    skills = profile.skill_set.all()
+    projects = profile.project_set.all()
+
+    context = {
+            'profile': profile,
+            'skills': skills,
+            'projects': projects,
+        }
+    return render(request, 'users/user-account.html',context)
