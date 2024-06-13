@@ -3,7 +3,7 @@ from django.contrib import messages
 from .models import Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserCustomRegisterForm
+from .forms import UserCustomRegisterForm, ProfileForm
 
 # Create your views here.
 
@@ -102,3 +102,31 @@ def userAccount(request):
             'projects': projects,
         }
     return render(request, 'users/user-account.html',context)
+
+
+@login_required(login_url='login')
+def updateProfile(request):
+    
+    profile = request.user.profile
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST,request.FILES,instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('account')
+    else:
+        form = ProfileForm(instance=profile)
+
+
+    context = {
+        'form': form,
+        }
+    return render(request, 'users/edit-profile.html',context)
+
+#ok update profile 
+#ok crear views.py y funcion
+#ok añadir a url.py
+# crear form.py
+# añadir a la plantilla
+# crear signals para que cuando se modifique el profile se modifique user
+# en username, first_name y email profile - User

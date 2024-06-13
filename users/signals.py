@@ -35,8 +35,19 @@ def deleteUser(sender,instance,**kwargs):
     user = profile.user
     user.delete()
     
-    
+
+def updateProfile(sender,instance,created,**kwargs):
+# Cuando se actualia un perfil, se debe actualizar el first_name, username e email del User.abs
+    if not created:
+        profile = instance
+        user = profile.user
+        user.username = profile.username
+        user.email = profile.email
+        user.first_name = profile.name
+        user.save()
+
 
 # cuando se crear un User se debe crear un Profile y asignarlo
 post_save.connect(createProfile,sender=User)
+post_save.connect(updateProfile,sender=Profile)
 post_delete.connect(deleteUser,sender=Profile)

@@ -17,28 +17,38 @@
             <ul class="dev__social">
               {% if profile.social_github %}
               <li>
-                <a title="Stackoverflow" href="#" target="_blank"
-                  ><i class="im im-stackoverflow"
-                    >{{profile.social_github}}</i
-                  ></a
+                <a
+                  title="Stackoverflow"
+                  href="{{profile.social_github}}"
+                  target="_blank"
+                  ><i class="im im-stackoverflow">Github</i></a
                 >
               </li>
               {% endif %} {% if profile.social_twitter %}
               <li>
-                <a title="Twitter" href="#" target="_blank"
-                  ><i class="im im-twitter">{{profile.social_twitter}}</i></a
+                <a
+                  title="Twitter"
+                  href="{{profile.social_twitter}}"
+                  target="_blank"
+                  ><i class="im im-twitter">Twitter</i></a
                 >
               </li>
               {% endif %}{% if profile.social_linkedin %}
               <li>
-                <a title="LinkedIn" href="#" target="_blank"
-                  ><i class="im im-linkedin"></i>{{profile.social_linkedin}}</a
+                <a
+                  title="LinkedIn"
+                  href="{{profile.social_linkedin}}"
+                  target="_blank"
+                  ><i class="im im-linkedin"></i>LinkedIn</a
                 >
               </li>
               {% endif %} {% if profile.social_website %}
               <li>
-                <a title="Personal Website" href="#" target="_blank"
-                  ><i class="im im-globe"></i>{{profile.social_website}}</a
+                <a
+                  title="Personal Website"
+                  href="{{profile.social_website}}"
+                  target="_blank"
+                  ><i class="im im-globe"></i>Website</a
                 >
               </li>
               {% endif %}
