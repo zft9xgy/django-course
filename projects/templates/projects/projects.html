@@ -9,14 +9,15 @@
       </div>
 
       <div class="hero-section__search">
-        <form class="form" action="#" method="get">
+        <form class="form" action="{% url 'projects' %}" method="get">
           <div class="form__field">
             <label for="formInput#search">Search By Projects </label>
             <input
               class="input input--text"
               id="formInput#search"
               type="text"
-              name="text"
+              name="search_query"
+              value="{{search_query}}"
               placeholder="Search by Project Title"
             />
           </div>
@@ -46,7 +47,7 @@
                   <a
                     class="project__author"
                     href="{% url 'user-profile' item.owner.id %}"
-                    >By {{ item.owner.username }}</a
+                    >By {{ item.owner.name }}</a
                   >
                 </p>
                 {% endif %}

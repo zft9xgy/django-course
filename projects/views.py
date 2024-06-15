@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .models import Project
 from .forms import ProjectForm
 from users.models import Profile
+from .utils import searchProjects
 
 # Create your views here.
 # Aqui controlamos toda la lógica del programa. 
@@ -11,10 +12,12 @@ from users.models import Profile
 
 
 def projects(request):
-    projects = Project.objects.all()
+
+    projects, searchQuery = searchProjects(request)
     
     context = {
-        'projects': projects
+        'projects': projects,
+        'search_query':searchQuery,
     }
     return render(request, 'projects/projects.html',context)
 

@@ -9,7 +9,6 @@ def searchProfiles(request):
         searchQuery = request.GET.get('search_query') or ""
 
     if searchQuery:
-        print(searchQuery)
         skills = Skill.objects.filter(name__icontains=searchQuery)
         profiles = Profile.objects.distinct().filter(
             Q(name__icontains=searchQuery) | 
