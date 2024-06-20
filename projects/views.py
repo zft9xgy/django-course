@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 from django.http import HttpResponse
-from .models import Project
-from .forms import ProjectForm
+from .models import Project, Review
+from .forms import ProjectForm, ReviewForm
 from users.models import Profile
 from .utils import searchProjects, paginateProjects
 
@@ -26,9 +28,38 @@ def projects(request):
 
 
 def project(request,pk):
+
+
     projectObj = Project.objects.get(id=pk)
+    reviews = Review.objects.filter(project=projectObj)
+
+    reviewform = ReviewForm()
+    already_voters = {review.reviewer for review in reviews}
+
+    #3 casos 
+    # usuario no logueado -> mensaje para loguease
+    # usuario owner del proyecto -> aviso de que no puede votar
+    # usuario ya ha puesto un voto -> aviso de gracias por haber votado
+    # otro caso -> formulario para el voto
+    
+    if request.method == 'POST':
+        if (request.user.profile != projectObj.owner) and (request.user.profile != projectObj.owner):
+            reviewform = ReviewForm(request.POST)
+            review = reviewform.save(commit=False)
+            review.reviewer = request.user.profile
+            review.project = projectObj
+            review.save()
+            projectObj.updateVotes
+
+            messages.success(request, 'Your review was successfully submitted!')
+            return redirect('project',pk=projectObj.id)#(request.path)
+            
+
     context = {
-        'project': projectObj
+        'project': projectObj,
+        'reviews': reviews,
+        'form': reviewform,
+        'already_voters': already_voters
     }
     return render(request, 'projects/single-project.html',context)
 

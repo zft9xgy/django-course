@@ -13,70 +13,96 @@
           {% endfor %}
         </div>
         {% if project.source_link %}
-        <a class="singleProject__liveLink" href="{{project.source_link}}" target="_blank"><i class="im im-external-link"></i>Source Code
+        <a
+          class="singleProject__liveLink"
+          href="{{project.source_link}}"
+          target="_blank"
+          ><i class="im im-external-link"></i>Source Code
         </a>
-        {% endif %}
-        {% if project.demo_link %}
-        <a class="singleProject__liveLink" href="{{project.demo_link}}" target="_blank"><i class="im im-external-link"></i>Demo link
+        {% endif %} {% if project.demo_link %}
+        <a
+          class="singleProject__liveLink"
+          href="{{project.demo_link}}"
+          target="_blank"
+          ><i class="im im-external-link"></i>Demo link
         </a>
         {% endif %}
       </div>
       <div class="column column--2of3">
-        <img class="singleProject__preview" src="{{ project.featured_image.url }}" alt="portfolio thumbnail" />
-        <a href="{% url 'user-profile' project.owner.id %}" class="singleProject__developer">{{ project.owner.username }}</a>
+        <img
+          class="singleProject__preview"
+          src="{{ project.featured_image.url }}"
+          alt="portfolio thumbnail"
+        />
+        <a
+          href="{% url 'user-profile' project.owner.id %}"
+          class="singleProject__developer"
+          >{{ project.owner.username }}</a
+        >
         <h2 class="singleProject__title">{{project.title}}</h2>
         <h3 class="singleProject__subtitle">About the Project</h3>
-        <div class="singleProject__info">
-          {{project.description}}
-        </div>
+        <div class="singleProject__info">{{project.description}}</div>
 
         <div class="comments">
           <h3 class="singleProject__subtitle">Feedback</h3>
           <h5 class="project--rating">
-            {{project.vote_ratio}}% Postitive Feedback ({{project.vote_total}} Vote{{project.vote_total|pluralize:"s"}})
+            {{project.vote_ratio}}% Postitive Feedback ({{project.vote_total}}
+            Vote{{project.vote_total|pluralize:"s"}})
           </h5>
 
+          {% if not request.user.profile %}
+          <p>
+            Usuario no logueado. Por favor
+            <a href="{% url 'login' %}?next={{request.path}}"
+              >inicia sesión o crear una cuenta</a
+            >
+            para dejar un comentario
+          </p>
+          {% elif request.user.profile == project.owner %}
+          <p>No puedes votar tu propio proyecto.</p>
+          {% elif request.user.profile in already_voters%}
+          <p>Ya has votado este proyecto. No puedes volver a votar. Gracias.</p>
+          {% else %}
           <form class="form" action="#" method="POST">
-            <!-- Textarea -->
+            {% csrf_token %} {% for field in form %}
+            <!-- Input:Text -->
             <div class="form__field">
-              <label for="formInput#textarea">Comments: </label>
-              <textarea class="input input--textarea" name="message" id="formInput#textarea"
-                placeholder="Write your comments here..."></textarea>
+              <label for="formInput#text">{{field.label}}</label>
+              {{field}}
             </div>
-            <input class="btn btn--sub btn--lg" type="submit" value="Comments" />
+            {% endfor %}
+            <input
+              class="btn btn--sub btn--lg"
+              type="submit"
+              value="Comments"
+            />
+            <!-- Textarea -->
           </form>
+          {% endif %}
           <div class="commentList">
+            {% for review in reviews %}
             <div class="comment">
-              <a href="profile.html">
-                <img class="avatar avatar--md"
-                  src="https://pbs.twimg.com/profile_images/1335382240931368961/b3wSZKj4_400x400.jpg" alt="user" />
+              <a href="{% url 'user-profile' review.reviewer.id %}">
+                <img
+                  class="avatar avatar--md"
+                  src="{{review.reviewer.profile_image.url}}"
+                  alt="user"
+                />
               </a>
               <div class="comment__details">
-                <a href="profile.html" class="comment__author">Sulamita Ivanov</a>
-                <p class="comment__info">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit alias numquam perferendis
-                  mollitia minus minima exercitationem possimus ab deserunt qui, soluta iusto doloribus eveniet
-                  similique consequuntur ratione, dignissimos ut magni laborum quo.
-                </p>
+                <a
+                  href="{% url 'user-profile' review.reviewer.id %}"
+                  class="comment__author"
+                  >{{review.reviewer}}</a
+                >
+                <p class="comment__info">{{review.body}}</p>
               </div>
             </div>
-            <div class="comment">
-              <a href="profile.html">
-                <img class="avatar avatar--md" src="https://avatars.githubusercontent.com/u/33843378" alt="user" />
-              </a>
-              <div class="comment__details">
-                <a href="profile.html" class="comment__author">Dennis Ivanov</a>
-                <p class="comment__info">
-                  Consectetur adipisicing elit. Reprehenderit alias numquam perferendis mollitia minus minima
-                  exercitationem possimus ab deserunt qui, ratione, dignissimos ut magni laborum quo.
-                </p>
-              </div>
-            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </main>
 
